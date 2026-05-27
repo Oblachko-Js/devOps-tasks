@@ -50,3 +50,38 @@ sudo journalctl -u app2@2.service -f
   - app2@2 запускается на порту 9002 после app1
 - `Requires=app1.service` гарантирует, что app2 не запустится без app1
 - `After=app1.service` гарантирует порядок запуска
+
+## Dockerfile
+
+Пример `Dockerfile` для приложения с той же структурой `bin/`, `conf/` и `lib/`:
+
+- Базовый образ: `eclipse-temurin:17-jre-jammy`
+- Копирование `bin/`, `conf/`, `lib/`
+- Переменные окружения: `PORT`, `CONFIG_FILE_PATH`, `JAVA_OPTS`
+- Запуск через `./bin/application_name`
+
+### Сборка
+```bash
+docker build -t app1-image .
+```
+
+Если нужно использовать другой исполняемый файл, можно переопределить аргумент:
+```bash
+docker build --build-arg APP_NAME=app2 -t app2-image .
+```
+```
+
+### Запуск
+```bash
+docker run -e PORT=9001 app1-image
+```
+
+Для второго приложения запустить два контейнера:
+```bash
+docker run -e PORT=9002 app2-image
+docker run -e PORT=9003 app2-image
+```
+
+### Примечание
+
+В контейнере приложение получает переменные окружения, а `ENTRYPOINT` передаёт их в `-Dconfig.file`, `-Dhttp.port` и `-Dfile.encoding`.
