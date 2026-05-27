@@ -1,0 +1,17 @@
+[Unit]
+Description=App1 Service
+After=network.target
+
+[Service]
+Type=simple
+User=app
+WorkingDirectory=/opt/app1
+Environment="PORT=9001"
+Environment="CONFIG_FILE_PATH=conf/application.conf"
+Environment="JAVA_OPTS=-Xms512m -Xmx1G"
+ExecStart=/opt/app1/bin/app1 -Dconfig.file=$CONFIG_FILE_PATH -Dhttp.port=$PORT -Dfile.encoding=UTF8
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
