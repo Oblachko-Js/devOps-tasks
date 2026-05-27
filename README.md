@@ -85,3 +85,36 @@ docker run -e PORT=9003 app2-image
 ### Примечание
 
 В контейнере приложение получает переменные окружения, а `ENTRYPOINT` передаёт их в `-Dconfig.file`, `-Dhttp.port` и `-Dfile.encoding`.
+
+## Docker Compose
+
+Пример `docker-compose.yml` для запуска одной копии `app1` и двух экземпляров `app2`.
+
+- `app1` запускается первым
+- `app2_1` и `app2_2` зависят от `app1` через `depends_on`
+- `app2_1` использует порт `9002`, `app2_2` — порт `9003`
+
+### Запуск
+```bash
+docker compose up --build
+```
+
+### Остановка
+```bash
+docker compose down
+```
+
+### Если нужно запустить только часть
+```bash
+docker compose up --build app1
+``` 
+или
+```bash
+docker compose up --build app2_1 app2_2
+```
+
+### Структура
+
+- `docker-compose.yml` описывает три сервиса: `app1`, `app2_1`, `app2_2`
+- все сервисы строятся из `Dockerfile` с аргументом `APP_NAME`
+- `app2` контейнеры запускаются только после поднятия `app1`
